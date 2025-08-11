@@ -61,3 +61,7 @@ async def get_book(session: SessionDep):
     query = select(BookModel)
     result = await session.execute(query)
     return result.scalars().all()
+
+
+if __name__ == "__main__":
+    uvicorn.run(app)
