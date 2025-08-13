@@ -1,7 +1,30 @@
+import pytest
+from httpx import AsyncClient, ASGITransport
+
+from main import app
 
 
-def func(num):
-    return 1 / num
+@pytest.mark.asyncio
+async def test_get_books():
+    async with AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://test",
+    ) as ac:
+        resp = await ac.get("/books")
+        assert resp.status_code == 200
+        print(resp.json())
 
-def test_func():
-    assert func(1) == 1
+@pytest.mark.asyncio
+async def test_post_books():
+    async with AsyncClient(
+            transport=ASGITransport(app=app),
+            base_url="http://test",
+    ) as ac:
+        resp = await ac.post("/books", json={
+            "title": "hhh",
+            "author": "mmm"
+        })
+
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data == {"ok": True}

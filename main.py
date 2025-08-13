@@ -56,13 +56,13 @@ async def add_book(data: BookAddSchema, session: SessionDep):
     return {"ok": True}
 
 @app.get("/books")
-async def get_book(session: SessionDep):
+async def get_books(session: SessionDep):
     query = select(BookModel)
     result = await session.execute(query)
     return result.scalars().all()
 
 @app.put("/books/{book_id}")
-async def update_book(book_id: int, data: BookAddSchema, session: SessionDep):
+async def update_books(book_id: int, data: BookAddSchema, session: SessionDep):
     query = select(BookModel).where(BookModel.id == book_id)
     result = await session.execute(query)
     book = result.scalars().one()
@@ -72,7 +72,7 @@ async def update_book(book_id: int, data: BookAddSchema, session: SessionDep):
     return {"ok": True}
 
 @app.delete("/books/{book_id}")
-async def delete_book(book_id: int, session: SessionDep):
+async def delete_books(book_id: int, session: SessionDep):
     query = select(BookModel).where(BookModel.id == book_id)
     result = await session.execute(query)
     book = result.scalars().one()
