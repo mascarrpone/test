@@ -54,7 +54,6 @@ async def add_book(data: BookAddSchema, session: SessionDep):
     session.add(new_book)
     await session.commit()
     return {"ok": True}
-    
 
 @app.get("/books")
 async def get_book(session: SessionDep):
@@ -62,6 +61,24 @@ async def get_book(session: SessionDep):
     result = await session.execute(query)
     return result.scalars().all()
 
+@app.put("/books/{book_id}")
+async def update_book(book_id: int, data: BookAddSchema, session: SessionDep):
+    query = select(BookModel).where(BookModel.id == book_id)
+    result = await session.execute(query)
+    book = result.scalars().one()
+    book.title = data.title
+    book.author = data.author
+    await session.commit()
+    return {"ok": True}
+
+@app.delete("/books/{book_id}")
+async def delete_book(book_id: int, session: SessionDep):
+    query = select(BookModel).where(BookModel.id == book_id)
+    result = await session.execute(query)
+    book = result.scalars().one()
+    await session.delete(book)
+    await session.commit()
+    return {"ok": True}
 
 if __name__ == "__main__":
     uvicorn.run(app)
